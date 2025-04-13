@@ -1,0 +1,10 @@
+{
+  "title": "Chat de estudiantes",
+  "welcome": "¡Bienvenido al chat, {name}!",
+  "topic": "Tema",
+  "message_label": "Tu mensaje",
+  "send": "Enviar",
+  "export": "Exportar conversación a PDF",
+  "download": "Descargar PDF",
+  "error_not_assigned": "No estás asignado a una pareja."
+}

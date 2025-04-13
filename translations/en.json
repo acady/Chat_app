@@ -1,0 +1,10 @@
+{
+  "title": "Student Chat",
+  "welcome": "Welcome to the chat, {name}!",
+  "topic": "Topic",
+  "message_label": "Your message",
+  "send": "Send",
+  "export": "Export conversation as PDF",
+  "download": "Download PDF",
+  "error_not_assigned": "You are not assigned to a pair."
+}

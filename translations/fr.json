@@ -1,0 +1,10 @@
+{
+  "title": "Chat des élèves",
+  "welcome": "Bienvenue dans le chat, {name} !",
+  "topic": "Sujet",
+  "message_label": "Votre message",
+  "send": "Envoyer",
+  "export": "Exporter la conversation en PDF",
+  "download": "Télécharger le PDF",
+  "error_not_assigned": "Vous n'êtes pas affecté à une paire."
+}

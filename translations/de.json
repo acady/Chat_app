@@ -1,0 +1,10 @@
+{
+  "title": "Schüler:innen-Chat",
+  "welcome": "Willkommen im Chat, {name}!",
+  "topic": "Thema",
+  "message_label": "Deine Nachricht",
+  "send": "Senden",
+  "export": "Konversation als PDF exportieren",
+  "download": "PDF herunterladen",
+  "error_not_assigned": "Du bist keiner Paarung zugewiesen."
+}
