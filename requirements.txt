@@ -1,0 +1,5 @@
+streamlit
+fpdf
+python-dotenv
+pandas
+openpyxl
