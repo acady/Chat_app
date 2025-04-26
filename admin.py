@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import os
-import json
 import random
 from dotenv import load_dotenv
 from supabase import create_client
@@ -23,8 +22,11 @@ if uploaded_file:
     df = pd.read_excel(uploaded_file)
     names = df.iloc[:, 0].dropna().tolist()
 
-    # Vorhandene Students löschen (ohne Fehler)
-    supabase.table('students').delete().execute()
+    # Vorhandene Students sicher löschen
+    students = supabase.table('students').select('id').execute()
+    if students.data:
+        for student in students.data:
+            supabase.table('students').delete().eq('id', student['id']).execute()
 
     # Neue Students einfügen
     for name in names:
@@ -56,9 +58,13 @@ if st.button("🔁 Paarungen zufällig erstellen"):
                 }
                 pairs.append(pair)
 
-        # Vorhandene Paare löschen (ohne Fehler)
-        supabase.table('pairs').delete().execute()
+        # Vorhandene Paare sicher löschen
+        pairs_existing = supabase.table('pairs').select('id').execute()
+        if pairs_existing.data:
+            for pair in pairs_existing.data:
+                supabase.table('pairs').delete().eq('id', pair['id']).execute()
 
+        # Neue Paare speichern
         for pair in pairs:
             supabase.table('pairs').insert(pair).execute()
 
