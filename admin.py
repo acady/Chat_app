@@ -23,8 +23,8 @@ if uploaded_file:
     df = pd.read_excel(uploaded_file)
     names = df.iloc[:, 0].dropna().tolist()
 
-    # Vorhandene Students löschen
-    supabase.table('students').delete().neq('id', 'null').execute()
+    # Vorhandene Students löschen (ohne Fehler)
+    supabase.table('students').delete().execute()
 
     # Neue Students einfügen
     for name in names:
@@ -56,7 +56,8 @@ if st.button("🔁 Paarungen zufällig erstellen"):
                 }
                 pairs.append(pair)
 
-        supabase.table('pairs').delete().neq('id', 'null').execute()
+        # Vorhandene Paare löschen (ohne Fehler)
+        supabase.table('pairs').delete().execute()
 
         for pair in pairs:
             supabase.table('pairs').insert(pair).execute()
