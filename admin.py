@@ -10,6 +10,7 @@ import random
 import shutil
 from datetime import datetime
 from zipfile import ZipFile
+import time
 
 # CONFIG
 STUDENTS_FILE = "../students.json"

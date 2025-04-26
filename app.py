@@ -13,6 +13,7 @@ import random
 from datetime import datetime
 from fpdf import FPDF
 from dotenv import load_dotenv
+import time
 
 # Automatischer Reload
 if "last_refresh" not in st.session_state:
