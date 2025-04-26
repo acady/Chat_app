@@ -3,3 +3,9 @@ fpdf
 python-dotenv
 pandas
 openpyxl
+os
+json
+random
+shutil
+datetime
+ZipFile
