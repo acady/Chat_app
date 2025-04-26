@@ -1,5 +1,4 @@
 streamlit
-streamlit_autorefresh
 fpdf
 python-dotenv
 pandas
