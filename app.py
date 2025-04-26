@@ -1,6 +1,8 @@
 #  pip install streamlit
 # pip install fpdf
 # pip install streamlit fpdf python-dotenv
+# pip install streamlit-autorefresh
+
 
 # RUN: ]streamlit run app.py
 
