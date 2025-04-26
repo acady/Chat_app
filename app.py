@@ -13,10 +13,16 @@ import random
 from datetime import datetime
 from fpdf import FPDF
 from dotenv import load_dotenv
-from streamlit_autorefresh import st_autorefresh
 
-# Automatisch alle 3 Sekunden die Seite neu laden
-st_autorefresh(interval=2000, key="chat_refresh")
+# Automatischer Reload
+if "last_refresh" not in st.session_state:
+    st.session_state.last_refresh = time.time()
+
+REFRESH_INTERVAL_SEC = 5
+
+if time.time() - st.session_state.last_refresh > REFRESH_INTERVAL_SEC:
+    st.session_state.last_refresh = time.time()
+    st.experimental_rerun()
 
 # Load environment variables
 load_dotenv()
