@@ -15,13 +15,9 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 st.title("💬 Schüler:innen-Chat")
 
-# Setup Session State for name and last_refresh
+# Setup Session State for name
 if "name" not in st.session_state:
     st.session_state["name"] = ""
-if "last_refresh" not in st.session_state:
-    st.session_state["last_refresh"] = time.time()
-
-REFRESH_INTERVAL_SEC = 5
 
 # Name input with on_change
 def save_name():
@@ -55,24 +51,30 @@ else:
     os.makedirs(chat_log_dir, exist_ok=True)
     chat_log_path = os.path.join(chat_log_dir, f"{pair.replace(' & ', '_')}.txt")
 
-    # Load chat messages
-    if os.path.exists(chat_log_path):
-        with open(chat_log_path, "r") as f:
-            chat_lines = f.readlines()
-    else:
-        chat_lines = []
+    chat_placeholder = st.empty()
 
-    st.markdown("### Verlauf")
-    if chat_lines:
-        for line in chat_lines:
-            if name in line:
-                st.markdown(f"<div style='text-align: left'>{line.strip()}</div>", unsafe_allow_html=True)
+    def load_chat():
+        if os.path.exists(chat_log_path):
+            with open(chat_log_path, "r") as f:
+                chat_lines = f.readlines()
+        else:
+            chat_lines = []
+        return chat_lines
+
+    def display_chat(chat_lines):
+        with chat_placeholder.container():
+            st.markdown("### Verlauf")
+            if chat_lines:
+                for line in chat_lines:
+                    if name in line:
+                        st.markdown(f"<div style='text-align: left'>{line.strip()}</div>", unsafe_allow_html=True)
+                    else:
+                        st.markdown(f"<div style='text-align: right'>{line.strip()}</div>", unsafe_allow_html=True)
             else:
-                st.markdown(f"<div style='text-align: right'>{line.strip()}</div>", unsafe_allow_html=True)
-    else:
-        st.info("Noch keine Nachrichten.")
+                st.info("Noch keine Nachrichten.")
 
-    # Message sending
+    display_chat(load_chat())
+
     def send_message():
         msg = st.session_state["msg_input"].strip()
         if msg:
@@ -84,7 +86,6 @@ else:
 
     st.text_input("Deine Nachricht:", key="msg_input", on_change=send_message)
 
-    # PDF Export
     def export_chat_to_pdf():
         if not os.path.exists(chat_log_path):
             return None
@@ -117,7 +118,6 @@ else:
         else:
             st.error("Keine Chatdaten vorhanden zum Exportieren.")
 
-    # Refresh chat automatically
-    if time.time() - st.session_state["last_refresh"] > REFRESH_INTERVAL_SEC:
-        st.session_state["last_refresh"] = time.time()
-        st.rerun()
+    # Soft reload the chat
+    time.sleep(5)
+    st.rerun()
