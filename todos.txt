@@ -1,3 +1,10 @@
+Ausführen: 
+streamlit run app.py
+streamlit run admin.py
+
+pip install requirements.txt
+
+
 - Echtzeit update
 - Ein Thema für alle Gruppen
 - Wie kann ich prüfen dass nicht ein Text vom DeepL oder Google Translate eingefügt wird? 

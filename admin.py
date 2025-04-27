@@ -18,6 +18,10 @@ st.title("🎓 Lehrer:innen-Panel")
 st.subheader("📥 Schüler:innenliste hochladen")
 uploaded_file = st.file_uploader("Excel-Datei hochladen (.xlsx)", type="xlsx")
 
+# Thema-Einstellung
+shared_topic = st.text_input("📚 Thema für alle Paare (optional)")
+use_shared_topic = st.checkbox("Allen Paaren das gleiche Thema zuweisen", value=False)
+
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
     names = df.iloc[:, 0].dropna().tolist()
@@ -35,7 +39,7 @@ if uploaded_file:
     st.success(f"{len(names)} Schüler:innen gespeichert.")
 
 # Paarungen erstellen
-if st.button("🔁 Paarungen zufällig erstellen"):
+if st.button("🔁 Paarungen erstellen"):
     data = supabase.table('students').select('*').execute()
     students = [item['name'] for item in data.data]
 
@@ -44,17 +48,18 @@ if st.button("🔁 Paarungen zufällig erstellen"):
     else:
         random.shuffle(students)
         topics = [
-            "Umweltschutz", "Technologie", "Schule der Zukunft", "Soziale Medien",
-            "Reisen", "Künstliche Intelligenz", "Freundschaft", "Sport"
-        ] * 3
+                     "Umweltschutz", "Technologie", "Schule der Zukunft", "Soziale Medien",
+                     "Reisen", "Künstliche Intelligenz", "Freundschaft", "Sport"
+                 ] * 3
 
         pairs = []
         for i in range(0, len(students), 2):
             if i+1 < len(students):
+                topic = shared_topic if use_shared_topic and shared_topic else topics[i // 2]
                 pair = {
                     'student1': students[i],
                     'student2': students[i+1],
-                    'topic': topics[i // 2]
+                    'topic': topic
                 }
                 pairs.append(pair)
 

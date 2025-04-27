@@ -6,6 +6,7 @@ from datetime import datetime
 from fpdf import FPDF
 import time
 
+# Automatischer Refresh alle 5 Sekunden
 if "last_refresh" not in st.session_state:
     st.session_state.last_refresh = time.time()
 
@@ -15,6 +16,7 @@ if time.time() - st.session_state.last_refresh > REFRESH_INTERVAL_SEC:
     st.session_state.last_refresh = time.time()
     st.experimental_rerun()
 
+# Load environment
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
@@ -26,6 +28,7 @@ st.title("💬 Schüler:innen-Chat")
 name = st.text_input("Gib deinen Namen ein:")
 
 if name:
+    # Suche nach Paar
     data = supabase.table('pairs').select('*').execute()
     pairs = data.data
 
@@ -55,8 +58,11 @@ if name:
         chat_lines = []
 
     st.markdown("### Verlauf")
-    for line in chat_lines:
-        st.write(line.strip())
+    if chat_lines:
+        for line in chat_lines:
+            st.write(line.strip())
+    else:
+        st.info("Noch keine Nachrichten.")
 
     def send_message():
         msg = st.session_state["msg_input"].strip()
