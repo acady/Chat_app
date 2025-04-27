@@ -15,9 +15,11 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 st.title("💬 Schüler:innen-Chat")
 
-# Setup Session State for name
+# Setup Session State for name and chat history
 if "name" not in st.session_state:
     st.session_state["name"] = ""
+if "chat_lines" not in st.session_state:
+    st.session_state["chat_lines"] = []
 
 # Name input with on_change
 def save_name():
@@ -64,16 +66,16 @@ else:
     def display_chat(chat_lines):
         with chat_placeholder.container():
             st.markdown("### Verlauf")
-            if chat_lines:
-                for line in chat_lines:
-                    if name in line:
-                        st.markdown(f"<div style='text-align: left'>{line.strip()}</div>", unsafe_allow_html=True)
-                    else:
-                        st.markdown(f"<div style='text-align: right'>{line.strip()}</div>", unsafe_allow_html=True)
-            else:
-                st.info("Noch keine Nachrichten.")
+            for line in chat_lines:
+                if name in line:
+                    st.markdown(f"<div style='background-color: #d1e7dd; padding: 10px; border-radius: 10px; margin: 5px; text-align: left;'>{line.strip()}</div>", unsafe_allow_html=True)
+                else:
+                    st.markdown(f"<div style='background-color: #f8f9fa; padding: 10px; border-radius: 10px; margin: 5px; text-align: right;'>{line.strip()}</div>", unsafe_allow_html=True)
 
-    display_chat(load_chat())
+    new_chat_lines = load_chat()
+    if new_chat_lines != st.session_state["chat_lines"]:
+        st.session_state["chat_lines"] = new_chat_lines
+    display_chat(st.session_state["chat_lines"])
 
     def send_message():
         msg = st.session_state["msg_input"].strip()
