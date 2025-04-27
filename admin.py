@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import random
+import json
 from dotenv import load_dotenv
 from supabase import create_client
 
@@ -25,6 +26,20 @@ language = st.selectbox("Wähle die Sprache:", options=["de", "en", "fr", "es"],
 # Thema-Einstellung
 shared_topic = st.text_input("📚 Thema für alle Paare (optional)")
 use_shared_topic = st.checkbox("Allen Paaren das gleiche Thema zuweisen", value=False)
+
+# Regeln für Chatüberwachung
+st.subheader("🔒 Chat Regeln")
+max_characters_per_refresh = st.number_input("Maximale neue Zeichen pro 5 Sekunden:", min_value=10, max_value=200, value=20, step=5)
+max_words_per_message = st.number_input("Maximale Wörter pro Nachricht:", min_value=10, max_value=200, value=50, step=5)
+
+# Speichere die Einstellungen lokal in eine Konfigurationsdatei
+config = {
+    "max_characters_per_refresh": max_characters_per_refresh,
+    "max_words_per_message": max_words_per_message
+}
+config_path = "chat_config.json"
+with open(config_path, "w") as f:
+    json.dump(config, f)
 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)

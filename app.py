@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import json
 from dotenv import load_dotenv
 from supabase import create_client
 from datetime import datetime
@@ -13,6 +14,17 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Load chat configuration
+config_path = "chat_config.json"
+if os.path.exists(config_path):
+    with open(config_path, "r") as f:
+        config = json.load(f)
+    max_characters_per_refresh = config.get("max_characters_per_refresh", 20)
+    max_words_per_message = config.get("max_words_per_message", 50)
+else:
+    max_characters_per_refresh = 20
+    max_words_per_message = 50
+
 st.title("💬 Schüler:innen-Chat")
 
 # Setup Session State for name and chat history
@@ -20,6 +32,8 @@ if "name" not in st.session_state:
     st.session_state["name"] = ""
 if "chat_lines" not in st.session_state:
     st.session_state["chat_lines"] = []
+if "last_chat_length" not in st.session_state:
+    st.session_state["last_chat_length"] = 0
 
 # Name input with on_change
 def save_name():
@@ -80,6 +94,10 @@ else:
     def send_message():
         msg = st.session_state["msg_input"].strip()
         if msg:
+            if len(msg.split()) > max_words_per_message:
+                st.warning(f"⚠️ Deine Nachricht enthält mehr als {max_words_per_message} Wörter. Bitte kürze sie.")
+                return
+
             now = datetime.now().strftime("%H:%M")
             new_line = f"[{now}] {name}: {msg}\n"
             with open(chat_log_path, "a") as f:
@@ -123,13 +141,16 @@ else:
                 mime="application/pdf"
             )
 
-    # Button zum Löschen der Konversation
     if os.path.exists(chat_log_path) and st.button("🗑️ Konversation löschen"):
         os.remove(chat_log_path)
         st.success("Konversation erfolgreich gelöscht!")
         st.session_state["chat_lines"] = []
         st.rerun()
 
-    # Soft reload the chat
+    current_chat_length = sum([len(line.strip()) for line in st.session_state["chat_lines"]])
+    if current_chat_length - st.session_state["last_chat_length"] > max_characters_per_refresh:
+        st.warning(f"⚠️ Zu viele Zeichen auf einmal hinzugefügt! (>{max_characters_per_refresh}) Bitte fair bleiben.")
+    st.session_state["last_chat_length"] = current_chat_length
+
     time.sleep(5)
     st.rerun()
