@@ -19,11 +19,11 @@ config_path = "chat_config.json"
 if os.path.exists(config_path):
     with open(config_path, "r") as f:
         config = json.load(f)
-    max_characters_per_refresh = config.get("max_characters_per_refresh", 20)
-    max_words_per_message = config.get("max_words_per_message", 50)
+    max_characters_per_refresh = config.get("max_characters_per_refresh", 120)
+    max_words_per_message = config.get("max_words_per_message", 30)
 else:
-    max_characters_per_refresh = 20
-    max_words_per_message = 50
+    max_characters_per_refresh = 120
+    max_words_per_message = 30
 
 st.title("💬 Schüler:innen-Chat")
 
@@ -32,8 +32,8 @@ if "name" not in st.session_state:
     st.session_state["name"] = ""
 if "chat_lines" not in st.session_state:
     st.session_state["chat_lines"] = []
-if "last_chat_length" not in st.session_state:
-    st.session_state["last_chat_length"] = 0
+if "last_chat_snapshot" not in st.session_state:
+    st.session_state["last_chat_snapshot"] = []
 
 # Name input with on_change
 def save_name():
@@ -96,7 +96,11 @@ else:
         if msg:
             if len(msg.split()) > max_words_per_message:
                 st.warning(f"⚠️ Deine Nachricht enthält mehr als {max_words_per_message} Wörter. Bitte kürze sie.")
-                return
+                msg = " [too many words copy/paste?]"
+                # return
+
+            if len(msg) > max_characters_per_refresh:
+                msg += " [too many characters copy/paste?]"
 
             now = datetime.now().strftime("%H:%M")
             new_line = f"[{now}] {name}: {msg}\n"
@@ -145,12 +149,16 @@ else:
         os.remove(chat_log_path)
         st.success("Konversation erfolgreich gelöscht!")
         st.session_state["chat_lines"] = []
+        st.session_state["last_chat_snapshot"] = []
         st.rerun()
 
-    current_chat_length = sum([len(line.strip()) for line in st.session_state["chat_lines"]])
-    if current_chat_length - st.session_state["last_chat_length"] > max_characters_per_refresh:
-        st.warning(f"⚠️ Zu viele Zeichen auf einmal hinzugefügt! (>{max_characters_per_refresh}) Bitte fair bleiben.")
-    st.session_state["last_chat_length"] = current_chat_length
+    new_lines = [line for line in st.session_state["chat_lines"] if line not in st.session_state["last_chat_snapshot"]]
+    new_characters = sum(len(line.strip()) for line in new_lines)
+
+    if new_characters > max_characters_per_refresh:
+        st.warning(f"⚠️ Zu viele neue Zeichen hinzugefügt! ({new_characters} Zeichen)")
+
+    st.session_state["last_chat_snapshot"] = st.session_state["chat_lines"]
 
     time.sleep(5)
     st.rerun()
