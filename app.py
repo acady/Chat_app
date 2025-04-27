@@ -25,9 +25,16 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 st.title("💬 Schüler:innen-Chat")
 
-name = st.text_input("Gib deinen Namen ein:")
+if "name" not in st.session_state:
+    st.session_state["name"] = ""
 
-if name:
+if st.session_state["name"] == "":
+    name_input = st.text_input("Gib deinen Namen ein:")
+    if name_input:
+        st.session_state["name"] = name_input
+else:
+    name = st.session_state["name"]
+
     # Suche nach Paar
     data = supabase.table('pairs').select('*').execute()
     pairs = data.data
