@@ -99,7 +99,12 @@ else:
         pdf.ln(5)
         with open(chat_log_path, "r") as f:
             for line in f:
-                pdf.multi_cell(0, 10, txt=line.strip())
+                if name in line:
+                    pdf.set_x(10)
+                    pdf.multi_cell(0, 10, txt=line.strip())
+                else:
+                    pdf.set_x(80)
+                    pdf.multi_cell(0, 10, txt=line.strip())
         pdf_dir = "pdf_exports"
         os.makedirs(pdf_dir, exist_ok=True)
         pdf_path = os.path.join(pdf_dir, f"{pair.replace(' & ', '_')}.pdf")
