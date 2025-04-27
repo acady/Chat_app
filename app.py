@@ -27,13 +27,18 @@ st.title("💬 Schüler:innen-Chat")
 
 if "name" not in st.session_state:
     st.session_state["name"] = ""
+if "name_confirmed" not in st.session_state:
+    st.session_state["name_confirmed"] = False
 
-if st.session_state["name"] == "":
-    name_input = st.text_input("Gib deinen Namen ein:")
-    if name_input:
-        st.session_state["name"] = name_input
+if not st.session_state["name_confirmed"]:
+    st.text_input("Gib deinen Namen ein:", key="name_input")
+    if st.button("Weiter zum Chat"):
+        if st.session_state["name_input"]:
+            st.session_state["name"] = st.session_state["name_input"]
+            st.session_state["name_confirmed"] = True
 else:
     name = st.session_state["name"]
+    # CHATCODE STARTET HIER
 
     # Suche nach Paar
     data = supabase.table('pairs').select('*').execute()
