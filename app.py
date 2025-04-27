@@ -8,12 +8,12 @@ import time
 
 # Automatischer Refresh alle 5 Sekunden
 if "last_refresh" not in st.session_state:
-    st.session_state.last_refresh = time.time()
+    st.session_state["last_refresh"] = time.time()
 
 REFRESH_INTERVAL_SEC = 5
 
-if time.time() - st.session_state.last_refresh > REFRESH_INTERVAL_SEC:
-    st.session_state.last_refresh = time.time()
+if time.time() - st.session_state["last_refresh"] > REFRESH_INTERVAL_SEC:
+    st.session_state["last_refresh"] = time.time()
     st.experimental_rerun()
 
 # Load environment
