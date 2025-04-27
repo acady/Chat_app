@@ -68,9 +68,9 @@ else:
             st.markdown("### Verlauf")
             for line in chat_lines:
                 if name in line:
-                    st.markdown(f"<div style='background-color: #d1e7dd; padding: 10px; border-radius: 10px; margin: 5px; text-align: left;'>{line.strip()}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='background-color: #cce5ff; padding: 10px; border-radius: 10px; margin: 5px; text-align: left; color: black;'>{line.strip()}</div>", unsafe_allow_html=True)
                 else:
-                    st.markdown(f"<div style='background-color: #f8f9fa; padding: 10px; border-radius: 10px; margin: 5px; text-align: right;'>{line.strip()}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='background-color: #d6d6d6; padding: 10px; border-radius: 10px; margin: 5px; text-align: right; color: black;'>{line.strip()}</div>", unsafe_allow_html=True)
 
     new_chat_lines = load_chat()
     if new_chat_lines != st.session_state["chat_lines"]:
@@ -117,8 +117,13 @@ else:
                 file_name=os.path.basename(pdf_file),
                 mime="application/pdf"
             )
-        else:
-            st.error("Keine Chatdaten vorhanden zum Exportieren.")
+
+    # Button zum Löschen der Konversation
+    if os.path.exists(chat_log_path) and st.button("🗑️ Konversation löschen"):
+        os.remove(chat_log_path)
+        st.success("Konversation erfolgreich gelöscht!")
+        st.session_state["chat_lines"] = []
+        st.rerun()
 
     # Soft reload the chat
     time.sleep(5)
