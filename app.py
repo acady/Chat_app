@@ -14,7 +14,7 @@ REFRESH_INTERVAL_SEC = 5
 
 if time.time() - st.session_state["last_refresh"] > REFRESH_INTERVAL_SEC:
     st.session_state["last_refresh"] = time.time()
-    st.experimental_rerun()
+    st.rerun()
 
 # Load environment
 load_dotenv()

@@ -75,6 +75,16 @@ if st.button("🔁 Paarungen erstellen"):
 
         st.success("Paarungen gespeichert!")
 
+# Button um alle Paarungen zu löschen
+if st.button("🗑️ Alle Paarungen löschen"):
+    pairs_existing = supabase.table('pairs').select('id').execute()
+    if pairs_existing.data:
+        for pair in pairs_existing.data:
+            supabase.table('pairs').delete().eq('id', pair['id']).execute()
+        st.success("Alle Paarungen wurden gelöscht.")
+    else:
+        st.info("Keine Paarungen zum Löschen gefunden.")
+
 # Aktuelle Paare anzeigen
 st.subheader("👥 Aktuelle Paarungen")
 data = supabase.table('pairs').select('*').execute()
