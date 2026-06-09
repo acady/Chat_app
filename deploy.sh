@@ -52,6 +52,7 @@ for f in app.py requirements.txt chat_config.json; do
   run_scp "${f}" "${REMOTE_DIR}/${f}"
 done
 run_scp ".streamlit/config.toml" "${REMOTE_DIR}/.streamlit/config.toml"
+run_scp "pages" "${REMOTE_DIR}/pages"
 
 # .env übertragen (wenn .env.production existiert, sonst .env)
 if [[ -f ".env.production" ]]; then

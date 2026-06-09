@@ -7,6 +7,15 @@ from datetime import datetime
 from fpdf import FPDF
 import time
 
+st.set_page_config(page_title="Schüler:innen-Chat", page_icon="💬")
+
+# Sidebar-Navigation vor Schülern verbergen
+st.markdown("""
+<style>
+[data-testid="stSidebarNav"] { display: none; }
+</style>
+""", unsafe_allow_html=True)
+
 # Load environment
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
