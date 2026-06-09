@@ -2,6 +2,10 @@
 headless = true
 address = "127.0.0.1"
 port = 8767
+enableCORS = false
+enableXsrfProtection = false
 
 [browser]
 gatherUsageStats = false
+serverAddress = "app.modellschule.digital"
+serverPort = 443
