@@ -1,2 +1,4 @@
 /chat_logs
 /pdf_exports
+.env
+deploy.local.env

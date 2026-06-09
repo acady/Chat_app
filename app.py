@@ -34,6 +34,8 @@ if "chat_lines" not in st.session_state:
     st.session_state["chat_lines"] = []
 if "last_chat_snapshot" not in st.session_state:
     st.session_state["last_chat_snapshot"] = []
+if "warning_msg" not in st.session_state:
+    st.session_state["warning_msg"] = ""
 
 # Name input with on_change
 def save_name():
@@ -93,14 +95,15 @@ else:
 
     def send_message():
         msg = st.session_state["msg_input"].strip()
+        st.session_state["warning_msg"] = ""
         if msg:
             if len(msg.split()) > max_words_per_message:
-                st.warning(f"⚠️ Deine Nachricht enthält mehr als {max_words_per_message} Wörter. Bitte kürze sie.")
-                msg = " [too many words copy/paste?]"
-                # return
+                st.session_state["warning_msg"] = f"⚠️ Deine Nachricht enthält mehr als {max_words_per_message} Wörter. Bitte kürze sie."
+                msg = "[zu viele Wörter – copy/paste?]"
 
             if len(msg) > max_characters_per_refresh:
-                msg += " [too many characters copy/paste?]"
+                st.session_state["warning_msg"] = f"⚠️ Deine Nachricht war zu lang ({len(msg)} Zeichen)."
+                msg += " [zu viele Zeichen – copy/paste?]"
 
             now = datetime.now().strftime("%H:%M")
             new_line = f"[{now}] {name}: {msg}\n"
@@ -109,6 +112,9 @@ else:
             st.session_state["msg_input"] = ""
 
     st.text_input("Deine Nachricht:", key="msg_input", on_change=send_message)
+
+    if st.session_state["warning_msg"]:
+        st.warning(st.session_state["warning_msg"])
 
     def export_chat_to_pdf():
         if not os.path.exists(chat_log_path):
